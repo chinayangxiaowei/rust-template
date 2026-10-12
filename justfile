@@ -25,6 +25,19 @@ test-scripts scope="":
     $ErrorActionPreference = "Stop"
     & ./scripts/tests/Pester/Run-Tests.ps1 -Path "{{ scope }}"
 
+# Accept every pending `*.anvil-proposed` file by replacing its sibling with Anvil's version.
+[script("pwsh", "-NoProfile")]
+accept-anvil-proposed:
+    $ErrorActionPreference = "Stop"
+    $proposals = @(git ls-files --others -- '*.anvil-proposed')
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($proposals.Count -eq 0) { Write-Host 'No .anvil-proposed files.'; exit 0 }
+    foreach ($proposal in $proposals) {
+        $target = $proposal -replace '\.anvil-proposed$', ''
+        Move-Item -LiteralPath $proposal -Destination $target -Force
+        Write-Host "Accepted $target"
+    }
+
 # Run compile-fail tests while iterating on macro diagnostics.
 [arg("package", long)]
 [arg("filter", long)]

@@ -59,7 +59,6 @@ include = [
 #   check the registry and increment by at least one patch if any family member already published that version.
 
 [workspace.dependencies]
-
 # external dependencies
 
 # local dependencies

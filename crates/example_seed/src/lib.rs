@@ -6,12 +6,8 @@
 
 //! This is my crate. It is a very good crate, it is a very nice crate.
 
-#![doc(
-    html_logo_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/logo.png"
-)]
-#![doc(
-    html_favicon_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/favicon.ico"
-)]
+#![doc(html_logo_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/logo.png")]
+#![doc(html_favicon_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/favicon.ico")]
 
 /// Adds `values`, returning `None` if the total does not fit in a `u64`.
 ///

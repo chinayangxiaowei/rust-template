@@ -1,0 +1,41 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# Verifies that the generated cargo-anvil artifacts in this repository match
+# what the pinned cargo-anvil release would render. Fails when
+# `cargo anvil --dry-run` reports pending changes or refusals; run
+# `cargo anvil` locally with the same version and commit the result.
+name: regenerate-check
+
+on:
+  pull_request: {}
+  merge_group: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regenerate-check-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_ANVIL_VERSION: "0.13.0"
+
+jobs:
+  regenerate-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          lfs: true
+      - name: Install cargo-anvil
+        run: cargo install --locked cargo-anvil --version "$CARGO_ANVIL_VERSION"
+      - name: Verify generated files are up to date
+        run: |
+          if ! cargo anvil --dry-run ; then
+            echo "::error::Generated anvil files are out of date." \
+                 "Run 'cargo install --locked cargo-anvil --version $CARGO_ANVIL_VERSION'," \
+                 "then 'cargo anvil', and commit the diff."
+            exit 1
+          fi

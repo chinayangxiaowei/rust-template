@@ -5,8 +5,7 @@ Code in this repository should follow the guidelines specified in the [Microsoft
 ## Design Docs Are Part of the Source
 
 Each crate's design is captured under `crates/<crate>/docs/`, kept in
-lockstep with the code (as pioneered by `cargo-anvil` and
-`cargo-coverage-gate`). Design is the contract; code is the realization.
+lockstep with the code. Design is the contract; code is the realization.
 
 This is prospective, not a retroactive invariant: new crates land with a
 design doc (see [New features and new crates](#new-features-and-new-crates)),

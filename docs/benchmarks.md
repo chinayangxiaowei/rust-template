@@ -1,7 +1,10 @@
 # Benchmarks
 
-This chapter covers the conventions for writing Criterion (wall-clock)
-benchmarks. See [`docs/naming.md`](naming.md) for file and identifier naming.
+This chapter covers the conventions for writing Criterion (wall-clock) and
+Callgrind (simulated instruction-count) benchmarks. It is the entry point for
+benchmark work; the deep references are
+[`docs/callgrind-benchmarks.md`](callgrind-benchmarks.md) for the Callgrind
+strategy and [`docs/naming.md`](naming.md) for file and identifier naming.
 
 ## Benchmark design
 
@@ -30,9 +33,11 @@ benchmark function and in the same benchmark group.
 
 Do not forget to register benchmarks in `Cargo.toml`.
 
-Benchmark file names and Criterion group names follow strict conventions
-documented in [`docs/naming.md`](naming.md): the file basename prefixes
-Criterion group names.
+Benchmark file names, Criterion group names, and Callgrind group/function names
+follow strict conventions documented in [`docs/naming.md`](naming.md): the file
+basename prefixes Criterion group names, Callgrind files require a paired
+Criterion file, and Callgrind identifiers mirror Criterion ones with `/`
+substituted by `_`.
 
 ## Stack pin vs. `Box::pin` on the measured path
 
@@ -50,8 +55,17 @@ region:
 
 * Criterion `iter_custom` setup (anything before `Instant::now()`).
 * The first ("payload preparation") callback of `iter_batched()`.
+* Gungraun setup functions referenced via `#[bench::id(setup_fn())]` — these run
+  outside the measured region and pass the result into the bench body by value.
 * Helper functions that must return `Pin<Box<T>>` across a function boundary (a
   stack pin would dangle).
 * Intentional `Box::pin` baselines where the allocation IS what is being
   measured.
 
+## Callgrind benchmarks
+
+For performance-critical hot paths, complement the Criterion benchmarks with
+Callgrind-based instruction-count benchmarks. See
+[`docs/callgrind-benchmarks.md`](callgrind-benchmarks.md) for the strategy,
+scenario selection, bench file template, the Criterion-pairing convention, and
+how to interpret results.

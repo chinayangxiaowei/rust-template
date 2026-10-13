@@ -17,7 +17,7 @@
       3. `cargo anvil --dry-run` reports nothing to regenerate;
       4. cargo-heather accepts every license header;
       5. cargo-doc2readme regenerates crate READMEs identical to the rebranded ones;
-      6. the Pester suite passes on the rebranded scripts and fixtures;
+      6. the Pester suite fails no test that passes before the rebrand;
       7. add-crate.ps1 creates a crate from the rebranded template;
       8. rebrand check still passes after all of the above.
 
@@ -62,6 +62,20 @@ function Invoke-InCopy {
     } finally {
         Pop-Location
     }
+}
+
+# Runs the Pester suite under $Root in a child process and returns the names of
+# failed tests, blocks and containers.
+function Get-PesterFailures {
+    param([string]$Root)
+
+    $out = Join-Path ([System.IO.Path]::GetTempPath()) ("rebrand-pester-" + [guid]::NewGuid().ToString('N') + '.txt')
+    $runner = Join-Path $Root 'scripts' 'tests' 'Pester' 'Run-Tests.ps1'
+    $command = "`$r = & '$runner' -PassThru; " +
+        "@(`$r.Failed.ExpandedPath) + @(`$r.FailedBlocks.ExpandedPath) + @(`$r.FailedContainers.Item) | " +
+        "Where-Object { `$_ } | ForEach-Object { `"`$_`".Replace('$Root', '<root>') } | Sort-Object -Unique | Set-Content '$out'"
+    pwsh -NoProfile -Command $command | Out-Null
+    try { return @(Get-Content $out -ErrorAction Stop) } finally { Remove-Item $out -ErrorAction SilentlyContinue }
 }
 
 try {
@@ -115,8 +129,15 @@ try {
         Invoke-InCopy just @('anvil-readme-check')
     }
 
-    Invoke-Step 'the Pester suite passes on the rebranded scripts' {
-        Invoke-InCopy pwsh @('-NoProfile', '-File', 'scripts/tests/Pester/Run-Tests.ps1')
+    Invoke-Step 'the Pester suite fails no test that passes before the rebrand' {
+        # Compare against the original tree rather than require a clean run:
+        # the question is whether the rebrand broke anything, not whether the
+        # suite was green beforehand.
+        $before = Get-PesterFailures -Root $repoRoot
+        $after = Get-PesterFailures -Root $copy
+        $new = @($after | Where-Object { $_ -notin $before })
+        Write-Host "    failing before: $($before.Count), after: $($after.Count)"
+        if ($new.Count -gt 0) { throw "newly failing: $($new -join '; ')" }
     }
 
     Invoke-Step 'add-crate.ps1 creates a crate from the rebranded template' {

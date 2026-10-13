@@ -71,9 +71,13 @@ function Get-PesterFailures {
 
     $out = Join-Path ([System.IO.Path]::GetTempPath()) ("rebrand-pester-" + [guid]::NewGuid().ToString('N') + '.txt')
     $runner = Join-Path $Root 'scripts' 'tests' 'Pester' 'Run-Tests.ps1'
+    # Enumerate each list with ForEach-Object: on an empty list, `.Item` would
+    # return the list's own indexer instead of nothing.
     $command = "`$r = & '$runner' -PassThru; " +
-        "@(`$r.Failed.ExpandedPath) + @(`$r.FailedBlocks.ExpandedPath) + @(`$r.FailedContainers.Item) | " +
-        "Where-Object { `$_ } | ForEach-Object { `"`$_`".Replace('$Root', '<root>') } | Sort-Object -Unique | Set-Content '$out'"
+        "`$names = @(`$r.Failed | ForEach-Object ExpandedPath) + @(`$r.FailedBlocks | ForEach-Object ExpandedPath) + " +
+        "@(`$r.FailedContainers | ForEach-Object { `$_.Item.FullName }) | " +
+        "Where-Object { `$_ } | ForEach-Object { `"`$_`".Replace('$Root', '<root>') } | Sort-Object -Unique; " +
+        "[System.IO.File]::WriteAllLines('$out', [string[]]@(`$names))"
     pwsh -NoProfile -Command $command | Out-Null
     try { return @(Get-Content $out -ErrorAction Stop) } finally { Remove-Item $out -ErrorAction SilentlyContinue }
 }

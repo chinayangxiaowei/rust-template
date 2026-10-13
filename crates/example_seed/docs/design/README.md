@@ -19,6 +19,8 @@ A new workspace needs at least one crate so that every verification tier has som
 | `benches/<base>_cg.rs` | Callgrind instruction-count benchmarks, paired with `<base>.rs` | `just bench-cg` (Linux, Valgrind) |
 | `docs/design/README.md` | This design document | review |
 
+- It is deliberately **not** marked `publish = false`: `anvil-readme-check` and `anvil-semver-check` skip unpublished crates, and the seed must keep every check exercised. Rename or remove it before the first release instead of publishing it.
+
 ## User-visible shape
 
 `checked_sum(&[u64]) -> Option<u64>` adds the values and returns `None` on overflow.

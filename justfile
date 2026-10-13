@@ -55,12 +55,6 @@ trybuild-overwrite package filter="": anvil-tool-rustc-validate-prereqs
     $env:TRYBUILD = "overwrite"
     cargo {{_anvil_stable_toolchain_args}} test --package "{{ package }}" --all-features --locked --tests -- "{{ filter }}"
 
-# Install the Linux-only Callgrind benchmark runner.
-[script("pwsh", "-NoProfile")]
-setup-callgrind:
-    $ErrorActionPreference = "Stop"
-    & ./scripts/install-callgrind-tools.ps1
-
 # Publish a GitHub release for a crate tag.
 [arg("repository", long)]
 [arg("tag", long)]

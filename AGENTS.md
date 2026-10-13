@@ -192,18 +192,30 @@ In example code, prefer `.expect()` unless it gets too verbose - `.unwrap()` is 
 # [Benchmarks](docs/benchmarks.md)
 
 Criterion benchmark design (single-threaded by default, elementary operations,
-`black_box`) plus the `Box::pin` → `pin!` exception on the measured path.
-Cross-links to `naming.md`.
+`black_box`) plus the `Box::pin` → `pin!` exception on the measured path, and
+a pointer to the Callgrind chapter. Cross-links to `naming.md`.
 
 **Open this when**: adding or modifying any file in `crates/<crate>/benches/`;
 deciding how to pin a future inside an `iter` closure.
 
+# [Callgrind benchmarks](docs/callgrind-benchmarks.md)
+
+Deep reference for Callgrind / Gungraun instruction-count benchmarks: which
+operations to cover, scenario selection, the bench file template, Cargo.toml
+setup, Gungraun syntax gotchas, the Criterion-pairing convention, and how to
+interpret results.
+
+**Open this when**: adding a `*_cg.rs` benchmark file or deciding whether a hot
+path warrants Callgrind coverage.
+
 # [Naming](docs/naming.md)
 
-Naming conventions for benchmark files and Criterion groups — the rules that
-prevent name collisions in `target/.../deps/`.
+Naming conventions for benchmark files, Criterion groups, and Callgrind
+identifiers — the rules that keep wall-clock and instruction-count benchmarks
+in lockstep and prevent name collisions in `target/.../deps/`.
 
-**Open this when**: naming a new benchmark file, group, or function.
+**Open this when**: naming a new benchmark file, group, or function; pairing a
+Callgrind file with its Criterion counterpart.
 
 # [Performance](docs/performance.md)
 

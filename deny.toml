@@ -26,6 +26,11 @@ allow = [
 confidence-threshold = 0.93
 # <<< anvil-managed: anvil-deny-licenses
 
+# Per-crate license exceptions beyond the allow list above. Name the crate and
+# why its license is acceptable. Example:
+#   { crate = "webpki-root-certs", allow = ["CDLA-Permissive-2.0"] }, # Mozilla CA data license
+exceptions = []
+
 # >>> anvil-managed: anvil-deny-bans
 [bans]
 multiple-versions = "warn"

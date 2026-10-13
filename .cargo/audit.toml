@@ -4,4 +4,9 @@
 # cargo-audit (anvil-audit) reads this file; it does NOT consult deny.toml, so
 # advisory ignores must be mirrored here as well as in deny.toml's ignore list.
 [advisories]
-ignore = []
+ignore = [
+    # Only ignore an advisory that cannot be fixed yet, and say how it arrives and
+    # when the ignore can go. Remove the entry as soon as the fix is available.
+    # "RUSTSEC-2026-0194", # quick-xml DoS; pulled in by <crate> which pins 0.39.x;
+    #                      # remove once <crate> moves to quick-xml >= 0.41
+]

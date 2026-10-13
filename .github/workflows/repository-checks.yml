@@ -64,16 +64,34 @@ jobs:
         shell: pwsh
         run: ./scripts/tests/rebrand-roundtrip.ps1
 
+  callgrind-benchmarks:
+    name: Callgrind benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/anvil-setup
+        with:
+          group: none
+      - name: Install Rust
+        run: just anvil-toolchain-stable-install
+      - name: Install Valgrind
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - name: Install gungraun-runner
+        run: just setup-callgrind
+      - name: Run every Callgrind benchmark
+        run: just bench-cg
+
   required-repository-checks:
     name: Required repository checks
     if: always()
-    needs: [release-script-tests, rebrand-roundtrip]
+    needs: [release-script-tests, rebrand-roundtrip, callgrind-benchmarks]
     runs-on: ubuntu-latest
     steps:
       - name: Verify repository checks
         env:
           RELEASE_SCRIPT_TESTS: ${{ needs.release-script-tests.result }}
           REBRAND_ROUNDTRIP: ${{ needs.rebrand-roundtrip.result }}
+          CALLGRIND_BENCHMARKS: ${{ needs.callgrind-benchmarks.result }}
         run: |
           if [[ "$RELEASE_SCRIPT_TESTS" != "success" ]]; then
             echo "::error::release-script-tests concluded $RELEASE_SCRIPT_TESTS"
@@ -81,5 +99,9 @@ jobs:
           fi
           if [[ "$REBRAND_ROUNDTRIP" != "success" ]]; then
             echo "::error::rebrand-roundtrip concluded $REBRAND_ROUNDTRIP"
+            exit 1
+          fi
+          if [[ "$CALLGRIND_BENCHMARKS" != "success" ]]; then
+            echo "::error::callgrind-benchmarks concluded $CALLGRIND_BENCHMARKS"
             exit 1
           fi

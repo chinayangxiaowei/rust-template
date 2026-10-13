@@ -74,6 +74,27 @@ setup-callgrind:
     $ErrorActionPreference = "Stop"
     & ./scripts/install-callgrind-tools.ps1
 
+# Package that `bench-cg` is limited to, e.g. `just package=foo bench-cg`. Empty means every package.
+package := ""
+
+# Run Callgrind benchmarks (`crates/*/benches/*_cg.rs`), or only the named bench file. Linux with Valgrind only.
+[script("pwsh", "-NoProfile")]
+bench-cg bench="":
+    $ErrorActionPreference = "Stop"
+    if (-not $IsLinux) {
+        Write-Error "Callgrind needs Valgrind, which is Linux-only. On Windows, run: wsl -e bash -l -c 'just bench-cg'"
+    }
+    $benches = @(Get-ChildItem -Path crates/*/benches/*_cg.rs | ForEach-Object {
+        [pscustomobject]@{ Package = $_.Directory.Parent.Name; Bench = $_.BaseName }
+    } | Where-Object {
+        (-not "{{ package }}" -or $_.Package -eq "{{ package }}") -and (-not "{{ bench }}" -or $_.Bench -eq "{{ bench }}")
+    })
+    if ($benches.Count -eq 0) { Write-Error "No Callgrind benchmarks match package '{{ package }}' and bench '{{ bench }}'." }
+    foreach ($b in $benches) {
+        cargo bench --package $b.Package --bench $b.Bench --locked
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    }
+
 # Publish a GitHub release for a crate tag.
 [arg("repository", long)]
 [arg("tag", long)]

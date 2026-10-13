@@ -189,18 +189,6 @@ In test code, use `.unwrap()` instead of `.expect()` because the backtrace will 
 
 In example code, prefer `.expect()` unless it gets too verbose - `.unwrap()` is fine if you need to condense the text for readability.
 
-# [Testing tracing events](docs/tracing-tests.md)
-
-How to test `tracing` output without cross-test pollution. Key rule: every test
-binary that emits or inspects `tracing` must invoke `testing_aids::init_tracing!()`
-at module scope, or trace-event lines may be reported as uncovered even though
-they run.
-
-**Open this when**: writing or moving any test that inspects `tracing` output;
-adding a log/event emission that needs coverage; adding a crate whose tests emit
-`tracing` events (it needs the ctor initialization); tempted to install a global
-subscriber in a unit test.
-
 # [Benchmarks](docs/benchmarks.md)
 
 Criterion benchmark design (single-threaded by default, elementary operations,

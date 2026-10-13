@@ -8,14 +8,27 @@ exclude_globs = [
     # Linux-only source is compiled out on Windows.
     "**/*linux.rs",
     "linux",
+    # Test fixtures, examples and generated code have no behavior worth mutating.
+    # "crates/my_crate/src/testing/**",
+    # "crates/my_crate_examples/**",
+    # Presentation-only code (terminal UI, layout) whose output tests do not assert.
+    # "crates/my_cli/src/ui.rs",
 ]
 all_features = true
 cap_lints = true
 profile = "mutants"
 
 # Only run unit tests and integration tests, not doctests, benchmarks or examples.
-additional_cargo_test_args = ["--locked", "--tests"]
+# Arguments after "--" go to the test harness; use "--skip" for tests that are
+# intentionally fatal (abort, process exit) and cannot run under every mutant.
+additional_cargo_test_args = [
+    "--locked", "--tests", "--",
+    # "--skip", "abort::tests::abort_on_poisoned_state",
+]
 
+# Each entry is a regex matched against the mutant's name, as printed by
+# `cargo mutants --list`: "<file>:<line>:<col>: replace <what> with <what> in <fn>".
+# Every exclusion needs a comment saying why the mutant is not worth catching.
 exclude_re = [
     # There are no API contracts for what these must return because they
     # are for human-readable stringification. No purpose mutating them.
@@ -23,4 +36,12 @@ exclude_re = [
     "impl fmt::Debug",
     "impl std::fmt::Debug",
     "impl core::fmt::Debug",
+    # Equivalent mutant: the two operators give the same result for every
+    # reachable input, so no test can tell them apart.
+    # 'crates/my_crate/src/classes.rs:31:25: replace < with <= in make_classes$',
+    # Hanging mutant: the mutation makes a loop spin forever and only hits the
+    # test timeout. Keep other mutations in the same function.
+    # 'crates/my_crate/src/queue.rs:\d+:\d+: replace Queue::drain with \(\)$',
+    # Performance policy, not observable behavior (CPU hints, batch sizes).
+    # 'crates/my_crate/src/hal/mod.rs:\d+:\d+: replace (prefetch|pause) with \(\)$',
 ]

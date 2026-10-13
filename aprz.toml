@@ -75,6 +75,25 @@ advisories_cache_ttl = "1 week"
 # version = "^2.0"
 # ----------------------------------------------------------------------------
 
+# Adopter-owned allow list. Each entry needs a comment with the reason and
+# the condition for removing it. Representative cases:
+#
+# An advisory that cannot be fixed until an upstream crate upgrades
+# (mirror the ignore in deny.toml and .cargo/audit.toml):
+# [[allow_list]]
+# name = "quick-xml"
+# version = "=0.39.4"
+#
+# A workspace-only helper crate that has no registry metadata to appraise:
+# [[allow_list]]
+# name = "my_workspace_helper"
+# version = "=0.1.0"
+#
+# A finished, stable crate that scores low only because it is inactive:
+# [[allow_list]]
+# name = "cpu-time"
+# version = "=1.0.0"
+
 # ----------------------------------------------------------------------------
 # Expressions
 #

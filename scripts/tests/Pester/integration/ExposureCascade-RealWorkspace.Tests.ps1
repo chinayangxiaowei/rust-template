@@ -15,6 +15,15 @@
 # bytesbuf/bytesbuf_io relationship changes, or bytesbuf_io's allowlist is
 # edited, this file must fail and be consciously updated. A snapshot fixture
 # would re-create exactly the staleness problem it is meant to catch.
+#
+# The tests need the bytesbuf and bytesbuf_io crates of the workspace this
+# template was copied from. A repository that does not contain both skips the
+# whole file; the synthetic-baseline tests elsewhere still cover the logic.
+
+BeforeDiscovery {
+    $crates = Join-Path $PSScriptRoot '..\..\..\..\crates'
+    $hasBytesbufPair = (Test-Path (Join-Path $crates 'bytesbuf')) -and (Test-Path (Join-Path $crates 'bytesbuf_io'))
+}
 
 BeforeAll {
     . (Join-Path $PSScriptRoot '..\_common\TestHelpers.ps1')
@@ -37,7 +46,7 @@ BeforeAll {
     }
 }
 
-Describe 'Exposed-dependency cascade over the live workspace' {
+Describe 'Exposed-dependency cascade over the live workspace' -Skip:(-not $hasBytesbufPair) {
     Context 'the bytesbuf -> bytesbuf_io topology' {
         It 'still has both crates present and published' {
             foreach ($folder in @('bytesbuf', 'bytesbuf_io')) {
@@ -144,7 +153,7 @@ Describe 'Exposed-dependency cascade over the live workspace' {
     }
 }
 
-Describe 'Re-exported type edges in the live workspace' {
+Describe 'Re-exported type edges in the live workspace' -Skip:(-not $hasBytesbufPair) {
     # cargo-check-external-types attributes a re-exported type to its DEFINING
     # crate, so a crate can allowlist a workspace crate it does not directly
     # depend on. These edges exist today and were invisible to a direct-edge

@@ -24,6 +24,7 @@ license: anvil-license-headers-validate-prereqs
 test-scripts scope="":
     $ErrorActionPreference = "Stop"
     & ./scripts/tests/Pester/Run-Tests.ps1 -Path "{{ scope }}"
+    exit $LASTEXITCODE
 
 # Replace the template's upstream identity using rebrand.psd1. Mode: preview, apply or check.
 [script("pwsh", "-NoProfile")]

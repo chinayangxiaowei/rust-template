@@ -22,11 +22,10 @@ continues to compile when selected packages depend on it, and its complete test
 suite continues to run natively and under `cargo careful`.
 
 Package-level exclusions enforce the absence of unsafe code with
-`#![forbid(unsafe_code)]`. When a test-only dependency expands to code that
-carries an internal `allow(unsafe_code)` attribute (for example a `ctor`-based
-initializer), apply the prohibition to non-test builds only with
-`#![cfg_attr(not(test), forbid(unsafe_code))]`. The shipped library remains
-unable to introduce unsafe code.
+`#![forbid(unsafe_code)]`. `cachet` applies the prohibition to non-test builds
+because its test-only tracing initializer expands through `ctor`, which carries
+an internal `allow(unsafe_code)` attribute. Its shipped library remains unable
+to introduce unsafe code.
 
 Prefer a test-level `#[cfg_attr(miri, ignore = "...")]` when only one
 integration scenario lacks Miri-specific value. The reason must name the
@@ -65,24 +64,69 @@ The following package-level exclusions are intentional:
 
 - Code-generation and benchmark orchestration packages are covered through
   generated code in consuming crates or by native process-level tests.
+- `cachet` and `ohno` contain no runtime `unsafe` code. Their behavioral suites
+  run natively and under `cargo careful`; their dependencies retain their own
+  Miri coverage.
+- `seismograph_cli` and `seismograph_runtime` are safe integration layers over
+  `seismograph`. The unsafe recorder and snapshot implementations remain in the
+  Miri-selected `seismograph` package.
+- `rest_over_grpc` keeps its runtime transcoding tests under Miri, but omits
+  build-time descriptor and code-generation unit tests. The build half is safe
+  Rust and remains covered by native tests and `cargo careful`.
+- `rallocator` uses v4 backends for Windows x64/ARM64 MSVC and Linux
+  x64/AArch64 with 4-KiB kernel pages. Its native
+  allocator and event-bridge suites run on both platforms, including Linux
+  runtime analysis through `cargo careful`. Its manifest explicitly excludes
+  Miri because native VM reservations and CPU prefetch instructions have no
+  interpreter backend. Miri is not a supported allocator backend; the old v1
+  Miri backend and telemetry test binaries are removed.
+  `seismograph` retains its independent portable runtime-analysis coverage,
+  and the schema-3 native owner/backend inventory codec in
+  `seismograph_rallocator` is platform-independent, as is its separate
+  allocation-event projection. Neither requires the native allocator backend
+  to run under Miri.
+  Its custom-global-allocator allocation-count fixture runs natively and under
+  `cargo careful`, not Miri. The separate native-schema integration tests retain
+  borrowed encoding and error-path coverage under Miri. This avoids exercising
+  Windows `System` allocation-header bookkeeping through the counting wrapper
+  during interpreter test-harness teardown.
+  The schema truncation regression retains every byte prefix natively and under
+  `cargo careful`. Miri checks the complete wire header, each owner header, and
+  the final eight bytes before every owner boundary instead of repeating the
+  same decoder reads for every byte in the observation arrays.
+- `templated_uri` remains selected because it is a consumer-facing integration
+  surface, but deterministic pseudo-fuzz breadth is reduced under Miri.
+- `internity` keeps unchecked storage and resolution paths under Miri. Native
+  tests retain default-constructor, preallocation, and hash-table rollback
+  breadth, while a bounded long-string case forces storage growth before
+  resolving every handle under Miri.
+- `http_extensions` remains selected as an integration surface, but its native
+  allocation-count test is not interpreted by Miri.
+- `performables` retains direct ownership and synchronization coverage. Its
+  channel telemetry integration uses the minimum supported event-ring capacity
+  only under Miri; ring-capacity behavior remains covered in `seismograph`.
+- `seismograph` retains direct recorder and snapshot coverage. Under Miri its
+  object-sampling population, repeated snapshot count, and default test event
+  ring capacity are reduced while still exercising selection, capture, and
+  buffer lifecycle transitions.
+- `fetch_winhttp_impl` retains callback, raw-context, handle, operation-buffer,
+  and foreign-thread lifecycle coverage. Native tests keep exhaustive TLS,
+  protocol, and port-option matrices; Miri executes representative cases.
+- `routerama` remains selected so its unsafe scanned-path and query-scanning
+  helpers execute under Miri. Native-only depth keeps the full stack-safety
+  stress, while Miri uses smaller paths that still cross resolver bounds and
+  exercise iterative teardown.
+- `multitude` retains direct Miri coverage across its unsafe allocation,
+  ownership, destructor, and chunk-lifecycle paths. Tests use smaller
+  configurable oversized thresholds or bulk initialization when per-element
+  repetition does not add another unsafe state transition.
+- `compressors` cannot run all backends under Miri; its manifest records the
+  backend-specific rationale.
 
-Add an entry for each package excluded from Miri, naming the coverage retained
-elsewhere. Representative reasons:
-
-<!--
-- `my_crate` contains no runtime `unsafe` code. Its behavioral suite runs
-  natively and under `cargo careful`; its dependencies retain their own Miri
-  coverage.
-- `my_crate_cli` is a safe integration layer over `my_crate`. The unsafe
-  implementation remains in the Miri-selected `my_crate` package.
-- `my_allocator` uses native VM reservations and CPU prefetch instructions that
-  have no interpreter backend. Its native suites and `cargo careful` remain
-  authoritative.
--->
-
-Do not infer that a safe package is automatically dispensable. Keep it selected
-when its runtime tests provide the workspace's only Miri coverage for an unsafe
-path in a dependency.
+Do not infer that a safe package is automatically dispensable.
+`rest_over_grpc`, for example, remains selected because its runtime tests
+provide the workspace's Miri coverage for the transcoding buffer path over
+`bytes` and `hyper`.
 
 ## Target-level selection limitations
 

@@ -4,3 +4,7 @@
 header = """
 Copyright (c) Microsoft Corporation.
 Licensed under the MIT License."""
+
+# Files cargo anvil owns keep the upstream header after `just rebrand`, and
+# rebrand.psd1 is never rebranded (it lists the upstream identity on purpose).
+exclude = ["justfiles/anvil", "rebrand.psd1"]

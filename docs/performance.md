@@ -26,8 +26,8 @@ Apply the first matching rule:
    generic or same-crate function on a hot path is not being inlined.** These are
    already inlining candidates by default, so the annotation is an extra hint
    applied only when measurement shows the default decision is wrong. Verify with
-   `just package=<crate> bench-cg` before and after, comparing instruction counts;
-   revert if the numbers do not move.
+   `cargo bench --package <crate>` before and after; revert if the numbers do
+   not move.
 
 3. **Do not use `#[inline(always)]` or `#[inline(never)]` without specific
    justification.** These are stronger hints intended as advanced tuning knobs;
@@ -38,7 +38,7 @@ Apply the first matching rule:
 When proposing or applying performance optimizations:
 
 * **Optimizations must be motivated by user-facing scenarios, not raw benchmark
-  deltas.** A Callgrind win on a synthetic micro-benchmark is not by itself
+  deltas.** A win on a synthetic micro-benchmark is not by itself
   sufficient justification. Ask: *what real workload does this help, and is that
   workload a design target of this package?* If the answer is "I would have to
   invent one", the change should usually not land.

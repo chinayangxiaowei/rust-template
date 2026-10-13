@@ -41,7 +41,7 @@ build the library, plus the metadata crates.io renders.
 - **Tests ship as source.** They are cheap to include in the tarball. They do
   not guarantee a packaged crate is verifiable on its own: Cargo strips
   path-only dev-dependencies from the published manifest, so any test that
-  needs an unpublished in-workspace helper (for example a shared test-fixture crate, or a
+  needs an unpublished in-workspace helper (for example `testing_aids`, or a
   `private-test-util` feature reached only through a path dev-dependency) will
   not build from crates.io alone. Fuzz targets are excluded because they need a
   separate toolchain to build at all.

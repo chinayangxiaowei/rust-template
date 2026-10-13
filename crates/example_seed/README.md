@@ -13,7 +13,20 @@
 
 </div>
 
-This is my crate. It is a very good crate, it is a very nice crate.
+Seed crate that keeps a new workspace buildable from its first commit.
+
+The crate exists so that every verification tier (tests, coverage, mutation
+testing, examples and benchmarks) has something to check before the
+workspace has real crates. Replace or remove it once real crates exist.
+
+## Quick Start
+
+```rust
+use example_seed::checked_sum;
+
+assert_eq!(checked_sum(&[1, 2, 3]), Some(6));
+assert_eq!(checked_sum(&[u64::MAX, 1]), None);
+```
 
 
 <hr/>

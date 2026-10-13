@@ -60,6 +60,9 @@ include = [
 
 [workspace.dependencies]
 # external dependencies
+criterion = { version = "0.8.2", default-features = false }
+# Keep the library aligned with gungraun-runner: `just setup-callgrind` installs the runner at this exact version.
+gungraun = { version = "=0.19.4", default-features = false }
 
 # local dependencies
 example_seed = { path = "crates/example_seed", default-features = false, version = "0.1.0" }

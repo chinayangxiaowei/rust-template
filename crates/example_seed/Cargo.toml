@@ -23,6 +23,20 @@ all-features = true
 [dependencies]
 
 [dev-dependencies]
+criterion = { workspace = true }
+
+# Callgrind benchmarks only build their Gungraun code on Linux. Keep gungraun
+# out of Windows and macOS resolution so cargo-udeps does not flag it as unused.
+[target.'cfg(target_os = "linux")'.dev-dependencies]
+gungraun = { workspace = true, features = ["default"] }
+
+[[bench]]
+name = "example_seed_sum"
+harness = false
+
+[[bench]]
+name = "example_seed_sum_cg"
+harness = false
 
 # >>> anvil-managed: anvil-lints
 [lints]

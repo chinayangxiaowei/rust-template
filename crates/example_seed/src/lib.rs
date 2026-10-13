@@ -4,10 +4,23 @@
 #![cfg_attr(coverage_nightly, feature(coverage_attribute))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-//! This is my crate. It is a very good crate, it is a very nice crate.
+//! Seed crate that keeps a new workspace buildable from its first commit.
+//!
+//! The crate exists so that every verification tier (tests, coverage, mutation
+//! testing, examples and benchmarks) has something to check before the
+//! workspace has real crates. Replace or remove it once real crates exist.
+//!
+//! # Quick Start
+//!
+//! ```
+//! use example_seed::checked_sum;
+//!
+//! assert_eq!(checked_sum(&[1, 2, 3]), Some(6));
+//! assert_eq!(checked_sum(&[u64::MAX, 1]), None);
+//! ```
 
-#![doc(html_logo_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/logo.png")]
-#![doc(html_favicon_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/CRATE_NAME/favicon.ico")]
+#![doc(html_logo_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/example_seed/logo.png")]
+#![doc(html_favicon_url = "https://media.githubusercontent.com/media/microsoft/oxidizer/refs/heads/main/crates/example_seed/favicon.ico")]
 
 /// Adds `values`, returning `None` if the total does not fit in a `u64`.
 ///

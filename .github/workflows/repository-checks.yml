@@ -40,17 +40,46 @@ jobs:
         shell: pwsh
         run: just test-scripts
 
+  rebrand-roundtrip:
+    name: Rebrand round trip
+    runs-on: ubuntu-latest
+    env:
+      CARGO_ANVIL_VERSION: "0.13.0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/anvil-setup
+        with:
+          group: none
+      - name: Install Rust
+        run: just anvil-toolchain-stable-install
+      - name: Install generators
+        run: |
+          cargo install --locked cargo-anvil --version "$CARGO_ANVIL_VERSION"
+          just anvil-license-headers-setup
+          just anvil-readme-check-setup
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module -Name Pester -RequiredVersion 5.7.1 -Force -Scope CurrentUser -SkipPublisherCheck
+      - name: Rebrand a copy and run every generator on it
+        shell: pwsh
+        run: ./scripts/tests/rebrand-roundtrip.ps1
+
   required-repository-checks:
     name: Required repository checks
     if: always()
-    needs: [release-script-tests]
+    needs: [release-script-tests, rebrand-roundtrip]
     runs-on: ubuntu-latest
     steps:
       - name: Verify repository checks
         env:
           RELEASE_SCRIPT_TESTS: ${{ needs.release-script-tests.result }}
+          REBRAND_ROUNDTRIP: ${{ needs.rebrand-roundtrip.result }}
         run: |
           if [[ "$RELEASE_SCRIPT_TESTS" != "success" ]]; then
             echo "::error::release-script-tests concluded $RELEASE_SCRIPT_TESTS"
+            exit 1
+          fi
+          if [[ "$REBRAND_ROUNDTRIP" != "success" ]]; then
+            echo "::error::rebrand-roundtrip concluded $REBRAND_ROUNDTRIP"
             exit 1
           fi

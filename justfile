@@ -25,6 +25,18 @@ test-scripts scope="":
     $ErrorActionPreference = "Stop"
     & ./scripts/tests/Pester/Run-Tests.ps1 -Path "{{ scope }}"
 
+# Replace the template's upstream identity using rebrand.psd1. Mode: preview, apply or check.
+[script("pwsh", "-NoProfile")]
+rebrand mode="preview":
+    $ErrorActionPreference = "Stop"
+    switch ("{{ mode }}") {
+        "preview" { & ./scripts/rebrand.ps1 }
+        "apply" { & ./scripts/rebrand.ps1 -Apply }
+        "check" { & ./scripts/rebrand.ps1 -Check }
+        default { Write-Error "Unknown mode '{{ mode }}'. Use preview, apply or check." }
+    }
+    exit $LASTEXITCODE
+
 # Accept every pending `*.anvil-proposed` file by replacing its sibling with Anvil's version.
 [script("pwsh", "-NoProfile")]
 accept-anvil-proposed:

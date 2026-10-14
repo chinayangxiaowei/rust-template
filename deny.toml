@@ -43,3 +43,8 @@ allow-wildcard-paths = true
 unknown-registry = "deny"
 unknown-git = "deny"
 # <<< anvil-managed: anvil-deny-sources
+
+# Git repositories allowed as dependency sources: one entry per fork patched
+# into Cargo.toml's [patch.crates-io]. See docs/third-party-forks.md. Example:
+#   "https://github.com/example-org/foo",
+allow-git = []

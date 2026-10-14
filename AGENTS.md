@@ -126,7 +126,7 @@ packaged contents.
 
 ## Pull Requests
 
-Pull request titles must follow [Conventional Commits](https://www.conventionalcommits.org/) naming, e.g. `feat(my_crate): add new metric` or `fix(my_crate): correct eviction logic`.
+Pull request titles must follow [Conventional Commits](https://www.conventionalcommits.org/) naming, e.g. `feat(my-crate): add new metric` or `fix(my-crate): correct eviction logic`.
 
 ## Feature-gated Doctests
 

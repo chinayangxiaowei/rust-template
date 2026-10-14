@@ -144,7 +144,7 @@ This pattern is an exception to "Optional Dependencies in Test Builds" above: th
 
 ## Patching Third-party Crates
 
-When a dependency needs a fix that upstream has not released, fork it, pin the fork with `[patch.crates-io]` (`git` plus `rev`) in the root `Cargo.toml`, list the fork in `allow-git` in `deny.toml`, and comment each patch with the reason, the upstream pull request and the removal condition. A published crate must still work without the fix, because the patch does not reach its users. See [docs/third-party-forks.md](docs/third-party-forks.md).
+When a dependency needs a fix that upstream has not released, fork it, pin the fork with `[patch.crates-io]` (`git` plus `rev`) in the root `Cargo.toml`, list the account that owns the fork under `[sources.allow-org]` in `deny.toml`, and comment each patch with the reason, the upstream pull request and the removal condition. A published crate must still work without the fix, because the patch does not reach its users. See [docs/third-party-forks.md](docs/third-party-forks.md).
 
 ## `no_std` Support
 

@@ -49,7 +49,9 @@ unknown-registry = "deny"
 unknown-git = "deny"
 # <<< anvil-managed: anvil-deny-sources
 
-# Git repositories allowed as dependency sources: one entry per fork patched
-# into Cargo.toml's [patch.crates-io]. See docs/third-party-forks.md. Example:
-#   "https://github.com/example-org/foo",
-allow-git = []
+# Accounts whose git repositories may be used as dependency sources, for forks
+# patched into Cargo.toml's [patch.crates-io]. Any repository under a listed
+# GitHub organization or user is allowed; list only accounts you control.
+# See docs/third-party-forks.md. Example: github = ["example-org"]
+[sources.allow-org]
+github = []

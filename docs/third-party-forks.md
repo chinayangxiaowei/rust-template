@@ -49,15 +49,19 @@ this guide.
    When several crates come from the same repository (for example `foo` and
    `foo-sys`), patch each one with the same `git` and `rev`.
 
-4. **Allow the source** in `deny.toml`. The generated `[sources]` section denies
-   unknown git sources, so `just anvil-deny` fails until the fork is listed in
-   `allow-git` (a trailing `.git` in either URL does not matter):
+4. **Allow the account** in `deny.toml`. The generated `[sources]` section
+   denies unknown git sources, so `just anvil-deny` fails until the account that
+   owns the fork is listed under `[sources.allow-org]`. Every repository under a
+   listed GitHub organization or user is then allowed, so list only accounts
+   you control:
 
    ```toml
-   allow-git = [
-       "https://github.com/example-org/foo",
-   ]
+   [sources.allow-org]
+   github = ["example-org"]
    ```
+
+   `allow-git` (exact repository URLs, no wildcards) also exists; use it only
+   for a single repository in an account you do not control.
 
 5. **Track** the removal: open an issue that links the upstream pull request,
    and send the fix upstream if it is not there yet.

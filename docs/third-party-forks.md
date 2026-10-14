@@ -5,9 +5,6 @@ is not an option, fork the dependency, commit the fix there, and point this
 workspace at the fork with `[patch.crates-io]`. Send the same fix upstream, and
 delete the patch once upstream publishes a release that contains it.
 
-This is how projects such as [Zed](https://github.com/zed-industries/zed) and
-[Agave](https://github.com/anza-xyz/agave) carry urgent fixes.
-
 ## What a patch does and does not reach
 
 `[patch.crates-io]` replaces a crate everywhere in this workspace's dependency

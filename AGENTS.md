@@ -142,6 +142,10 @@ Shared fixtures that a crate's own tests, benchmarks and examples need - mock se
 
 This pattern is an exception to "Optional Dependencies in Test Builds" above: the fixture module is gated on `feature = "private-test-util"` alone (not `cfg(any(test, feature = ...))`), and its optional dependencies are not mirrored as non-optional dev-dependencies of the implementation crate, because the implementation crate's own unit tests do not consume the fixtures. See [docs/private-test-utils.md](docs/private-test-utils.md).
 
+## Patching Third-party Crates
+
+When a dependency needs a fix that upstream has not released, fork it, pin the fork with `[patch.crates-io]` (`git` plus `rev`) in the root `Cargo.toml`, list the fork in `allow-git` in `deny.toml`, and comment each patch with the reason, the upstream pull request and the removal condition. A published crate must still work without the fix, because the patch does not reach its users. See [docs/third-party-forks.md](docs/third-party-forks.md).
+
 ## `no_std` Support
 
 `no_std` support is optional when deciding whether to adopt or expand it. Support for constrained targets must not justify disproportionate implementation complexity, such as extensive `cfg` branching or specialized fallbacks for platforms without pointer-width atomics.

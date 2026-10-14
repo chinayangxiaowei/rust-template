@@ -126,7 +126,7 @@ packaged contents.
 
 ## Pull Requests
 
-Pull request titles must follow [Conventional Commits](https://www.conventionalcommits.org/) naming, e.g. `feat(my-crate): add new metric` or `fix(my-crate): correct eviction logic`.
+Pull request titles must follow [Conventional Commits](https://www.conventionalcommits.org/) naming, e.g. `feat(my_crate): add new metric` or `fix(my_crate): correct eviction logic`.
 
 ## Feature-gated Doctests
 
@@ -226,12 +226,13 @@ path warrants Callgrind coverage.
 
 # [Naming](docs/naming.md)
 
-Naming conventions for benchmark files, Criterion groups, and Callgrind
-identifiers — the rules that keep wall-clock and instruction-count benchmarks
-in lockstep and prevent name collisions in `target/.../deps/`.
+Naming conventions for crates (underscores, never hyphens), benchmark files,
+Criterion groups, and Callgrind identifiers — the rules that keep wall-clock
+and instruction-count benchmarks in lockstep and prevent name collisions in
+`target/.../deps/`.
 
-**Open this when**: naming a new benchmark file, group, or function; pairing a
-Callgrind file with its Criterion counterpart.
+**Open this when**: naming a new crate or binary; naming a new benchmark file,
+group, or function; pairing a Callgrind file with its Criterion counterpart.
 
 # [Performance](docs/performance.md)
 

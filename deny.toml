@@ -47,6 +47,7 @@ unknown-git = "deny"
 # Accounts whose git repositories may be used as dependency sources, for forks
 # patched into Cargo.toml's [patch.crates-io]. Any repository under a listed
 # GitHub organization or user is allowed; list only accounts you control.
-# See docs/third-party-forks.md. Example: github = ["example-org"]
+# `just rebrand apply` adds the owner from rebrand.psd1; add other accounts by
+# hand. See docs/third-party-forks.md.
 [sources.allow-org]
 github = []

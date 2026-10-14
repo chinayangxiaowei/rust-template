@@ -105,6 +105,19 @@ sponsorship.
             To   = ''
         }
 
+        # deny.toml: allow git dependencies (forks patched into Cargo.toml) from
+        # repositories under the owner account. Add more accounts there by hand.
+        @{
+            From = @'
+[sources.allow-org]
+github = []
+'@
+            To   = @'
+[sources.allow-org]
+github = ["${owner}"]
+'@
+        }
+
         # Catch-all for the remaining project name: logo alt text, docs titles,
         # crate keywords, DEVELOPMENT.md clone instructions, the cspell
         # dictionary name and path examples in docs and tests.

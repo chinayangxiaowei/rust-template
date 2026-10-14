@@ -60,6 +60,8 @@ this guide.
    github = ["example-org"]
    ```
 
+   `just rebrand apply` puts the `owner` account from `rebrand.psd1` there,
+   so forks under that account need no change; add other accounts by hand.
    `allow-git` (exact repository URLs, no wildcards) also exists; use it only
    for a single repository in an account you do not control.
 

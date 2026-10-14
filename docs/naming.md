@@ -4,6 +4,29 @@ This document codifies naming conventions for files and identifiers across the
 workspace. See `AGENTS.md` for the broader set of conventions; this file focuses
 on naming patterns that need to be consistent across packages.
 
+## Crate naming
+
+Package names use underscores, never hyphens: `my_crate`, not `my-crate`.
+The package name is then identical to the identifier used in code
+(`use my_crate::...`) and to the prefix of the crate's benchmark files (see
+below), so a name can be searched for in one form. `scripts/add-crate.ps1`
+rejects names that contain hyphens.
+
+A binary that must carry a hyphen, such as a Cargo subcommand that Cargo only
+finds as `cargo-<name>`, sets that name on its `[[bin]]` target and keeps an
+underscored package name:
+
+```toml
+[package]
+name = "cargo_example"
+
+[[bin]]
+name = "cargo-example"
+path = "src/main.rs"
+```
+
+Pull request title scopes use the package name as is, e.g. `feat(my_crate): ...`.
+
 ## Benchmark naming
 
 The workspace contains both Criterion (wall-clock) and Callgrind/Gungraun

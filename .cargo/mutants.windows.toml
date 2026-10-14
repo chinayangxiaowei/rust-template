@@ -9,6 +9,8 @@ exclude_globs = [
     "**/*linux.rs",
     "linux",
     # Test fixtures, examples and generated code have no behavior worth mutating.
+    # Test-only helper crate; other crates' tests exercise it opportunistically.
+    "crates/testing_aids/**",
     # "crates/my_crate/src/testing/**",
     # "crates/my_crate_examples/**",
     # Presentation-only code (terminal UI, layout) whose output tests do not assert.

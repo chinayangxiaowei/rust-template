@@ -235,6 +235,16 @@ Describe 'Repository rebrand configuration' {
         @($config.Rules).Count | Should -BeGreaterThan 0
     }
 
+    It 'allows git dependencies from the owner account in deny.toml' {
+        $config = Resolve-RebrandConfig (Import-PowerShellDataFile (Join-Path $script:RepoRoot 'rebrand.psd1'))
+        $deny = [System.IO.File]::ReadAllText((Join-Path $script:RepoRoot 'deny.toml'))
+        $owner = (Import-PowerShellDataFile (Join-Path $script:RepoRoot 'rebrand.psd1')).Values.owner
+
+        $result = Convert-RebrandText -Text $deny -Rules $config.Rules
+
+        $result.Text | Should -Match ('(?m)^\[sources\.allow-org\]\r?\ngithub = \["' + [regex]::Escape($owner) + '"\]$')
+    }
+
     It 'excludes every anvil-owned file that cargo-heather checks' {
         # After a rebrand the repository's license header changes, but files that
         # cargo anvil owns keep the upstream header. cargo-heather must skip them.

@@ -49,7 +49,7 @@ After installing the Rust toolchain, we setup repository-specific tooling:
 1. Execute `just anvil-build` to build the workspace. Verify that the build is successful.
 1. Execute `just anvil-pr-test` to execute the test and coverage group. Verify that it succeeds.
 1. Execute `just test-scripts` to run the Pester suite for the release-related PowerShell scripts. Verify that all tests pass.
-1. Validate that debugging works by opening `crates/tick/examples/tick_basic.rs` and pressing the `Debug` link that appears above `main()`. This should successfully launch the example app under the debugger.
+1. Validate that debugging works by opening `crates/example_seed/examples/example_seed_basic.rs` and pressing the `Debug` link that appears above `main()`. This should successfully launch the example app under the debugger.
 
 # Linux (WSL) environment setup
 
@@ -114,7 +114,7 @@ Validate the setup by executing the following tasks from the task palette (F1):
 1. `Tasks: Run Build Task`
 1. `Tasks: Run Test Task`
 
-Validate that debugging works by opening `crates/tick/examples/tick_basic.rs` and pressing the `Debug` link that appears above `main()`. This should successfully launch the example app under the debugger.
+Validate that debugging works by opening `crates/example_seed/examples/example_seed_basic.rs` and pressing the `Debug` link that appears above `main()`. This should successfully launch the example app under the debugger.
 
 # Before submitting a pull request
 

@@ -1,0 +1,9 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+# Stable toolchain for building and for every stable Anvil check, so local runs
+# and CI see the same compiler and the same lints. Bump it deliberately in its
+# own pull request, fixing whatever new lints the bump surfaces. The minimum
+# supported version is checked separately against `rust-version` in Cargo.toml.
+[toolchain]
+channel = "1.97"

@@ -9,6 +9,11 @@ yanked = "deny"
 unmaintained = "all"
 # <<< anvil-managed: anvil-deny-advisories
 
+# Advisories accepted on purpose. Each entry needs a reason and, where the fix
+# is out of our hands, the upstream release it waits on. Example:
+#   { id = "RUSTSEC-0000-0000", reason = "no fixed release yet; tracked in owner/repo#123" },
+ignore = []
+
 # >>> anvil-managed: anvil-deny-licenses
 [licenses]
 allow = [

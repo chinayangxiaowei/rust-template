@@ -26,6 +26,20 @@ This repository contains a set of crates that help you build robust highly scala
 
 These are the primary crates built out of this repo:
 
+<!--
+  One line per crate, sorted by name, in this form:
+
+    - [`my_crate`](./crates/my_crate/README.md) - One-sentence description.
+
+  scripts/add-crate.ps1 adds the line for a new crate (macro crates are left
+  out), so keep at least one entry and keep the list contiguous. Links to a
+  crate's README sections can go under its entry, indented by two spaces;
+  add-crate.ps1 then sorts only the entries above the first indented line:
+
+    - [`my_crate`](./crates/my_crate/README.md) - One-sentence description.
+      - [Migration from v1](./crates/my_crate/README.md#migration-from-v1)
+-->
+
 - [`example_seed`](./crates/example_seed/README.md) - Seed crate that keeps the template workspace buildable
 
 ## About this Repo

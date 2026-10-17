@@ -30,6 +30,9 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
+    # CodeQL uploads its results to GitHub code scanning, which other forges
+    # (Gitea, Forgejo) do not provide, so the job runs on github.com only.
+    if: github.server_url == 'https://github.com'
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
